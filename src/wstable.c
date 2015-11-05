@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "answer.h"
 #include "direction.h"
 #include "go.h"
 #include "wstable.h"
@@ -222,7 +221,7 @@ static void add_solution( Seq_T answer, const char* word, point_t start, directi
 {
 	solution_t solution = solution_init( (char*)word, start, direction );
 	if(v&0x1)fprintf( stderr, "%s:%d - Found word: %s\n", __FILE__, __LINE__, solution_tostring( solution ));
-	answer_add( answer, (void*)solution );
+	Seq_addhi( answer, (void*)solution );
 }
 
 static void set_filename( const char* fname )
