@@ -127,7 +127,9 @@ goFunctPtr_t go_getFunctionPtr( direction_t direction )
 	if (direction > NONE && direction <= NORTH_WEST) {
 		fptr = table[ direction ];
 	} else {
+#ifndef CPPUTEST_COMPILATION
 		fprintf( stderr, "%s() passed invalid direction %d.\n", __func__, direction);
+#endif /* CPPUTEST_COMPILATION */
 	}
 
 	return fptr;

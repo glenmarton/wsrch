@@ -31,7 +31,11 @@ int run( FILE* fin )
 	return 0;
 }
 
+#ifdef CPPUTEST_COMPILATION
+int wsrch_main( int argc, char* argv[] )
+#else
 int main( int argc, char* argv[] )
+#endif /* CPPUTEST_COMPILATION */
 {
 	wstable_create( argv[1] );
 	wstable_setHightlight( uppercase/star/color_blue );
