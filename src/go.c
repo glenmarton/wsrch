@@ -26,16 +26,10 @@ static bool adjust_widthLimit( point_t p );
  * global
  * functions
  */
-void go_create( int r, int c )
+void go_init( int r, int c )
 {
 	height = r;
 	width = c;
-}
-
-void go_destroy( void )
-{
-	height = 0;
-	width = 0;
 }
 
 bool go_north( point_t p )
@@ -144,6 +138,27 @@ void go_print_fptrs( void )
 		d++;
 	}
 }
+
+Seq_T wstable_findWord( void* vpuzzle, const char* word )
+{
+	bool flag = false;
+	point_t start = point_create();
+
+	while (start->row < height) {
+if(v&10)fprintf( stderr, "%s:%d - check row: %d\n", __FILE__, __LINE__, start->row );
+		start->col = 0;
+		while (start->col < width) {
+if(v&10)fprintf( stderr, "%s:%d - check col: %d\n", __FILE__, __LINE__, start->col );
+			flag |= try_this_location( word, start, answer );
+			start->col++;
+		}
+		start->row++;
+	}
+
+	point_destroy( &start );
+	return flag;
+}
+
 /*
  * local
  * functions

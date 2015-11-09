@@ -42,7 +42,7 @@ static void set_filename( const char* fname );
  * global
  * functions
  */
-void wstable_create( const char* fname )
+void wstable_init( const char* fname )
 {
 	CDPRINT( " %s", fname );
 	set_filename( fname );
@@ -53,10 +53,16 @@ void wstable_create( const char* fname )
 	memset( wstable, 0, sizeof( wstable ));
 }
 
-void wstable_destroy(void)
+wstable_t wstable_create( void )
 {
-	CDPRINT( "" );
-	set_filename( NULL );
+	wstable_t wstable = (wstableStruct) ALLOC( sizeof( wstableStruct ));
+
+	return wstable;
+}
+
+void wstable_destroy( wstable_t* wstablePtr )
+{
+	FREE( wstablePtr );
 }
 
 char* wstable_getFilename( void )
@@ -130,25 +136,7 @@ char* wstable_getLine( size_t row )
 	return wstable[ y ];
 }
 
-bool wstable_findWord( const char* word, Seq_T answer )
-{
-	bool flag = false;
-	point_t start = point_create();
 
-	while (start->row < height) {
-if(v&10)fprintf( stderr, "%s:%d - check row: %d\n", __FILE__, __LINE__, start->row );
-		start->col = 0;
-		while (start->col < width) {
-if(v&10)fprintf( stderr, "%s:%d - check col: %d\n", __FILE__, __LINE__, start->col );
-			flag |= try_this_location( word, start, answer );
-			start->col++;
-		}
-		start->row++;
-	}
-
-	point_destroy( &start );
-	return flag;
-}
 
 /*
  * local

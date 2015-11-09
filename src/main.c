@@ -1,5 +1,15 @@
 #ifdef NOT_YET	//gmj20151023
 #include "Seq.h"
+/*
+ * local
+ * prototypes
+ */
+static void process_answer( wstable_t puzzle, Seq_T answers );
+
+/*
+ * global
+ * functions
+ */
 void process_solutions( solutions_t solutions )
 {
 	size_t stop = solutions_getCount();
@@ -19,28 +29,65 @@ int run( FILE* fin )
 	size_t wsize = sizeof( word );
 
 	while (fgets( word, wsize, fin )) {
-		Seq_T solutions = Seq_new( 5 );
+		Seq_T answers = Seq_new( 5 );
 
-		if (wstable_hasWord( word, solutions )) {
-			process_solutions( solutions );
+		if (wstable_findWord( word, answers )) {
+			wstable_t puzzle = wstable_create();
+
+			result_record( puzzle, answers );
+			printf( "%s\n", wstable_tostring( puzzle ));
+
+			wstable_destroy( &puzzle );
 		}
 
-		Seq_free( &solutions );
+		free_solutions( answers );
+		Seq_free( &answers );
 	}
 
 	return 0;
 }
 
+int run2( FILE* fin )
+{
+	char word[65];
+	size_t wsize = sizeof( word );
+
+	while (fgets( word, wsize, fin )) {
+		wstable_t puzzle = wstable_create();
+		Seq_T answers = go_findWord( puzzle, word );
+
+		if (answers) {
+			process_answer( puzzle, answers );
+		}
+		wstable_destroy( &puzzle );
+	}
+
+	return 0;
+}
 #ifdef CPPUTEST_COMPILATION
 int wsrch_main( int argc, char* argv[] )
 #else
 int main( int argc, char* argv[] )
 #endif /* CPPUTEST_COMPILATION */
 {
-	wstable_create( argv[1] );
+	wstable_init( argv[1] );
 	wstable_setHightlight( uppercase/star/color_blue );
 
 	run( stdin );
 	return 0;
 }
 #endif /* NOT_YET */
+
+/*
+ * local
+ * functions
+ */
+static void process_answer( wstable_t puzzle, Seq_T answers )
+{
+			result_record( puzzle, answers );
+
+			printf( "%s\n", wstable_tostring( puzzle ));
+
+			free_solutions( answers );
+			Seq_free( &answers );
+}
