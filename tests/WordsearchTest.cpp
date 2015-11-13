@@ -1,5 +1,6 @@
 extern "C"
 {
+#include "wstable.h"
 #include "wordsearch.h"
 }
 

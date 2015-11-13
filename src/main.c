@@ -1,5 +1,7 @@
 #ifdef NOT_YET	//gmj20151023
 #include "Seq.h"
+#include "wstable.h"
+
 /*
  * local
  * prototypes
@@ -76,7 +78,6 @@ int main( int argc, char* argv[] )
 	run( stdin );
 	return 0;
 }
-#endif /* NOT_YET */
 
 /*
  * local
@@ -91,3 +92,4 @@ static void process_answer( wstable_t puzzle, Seq_T answers )
 			free_solutions( answers );
 			Seq_free( &answers );
 }
+#endif /* NOT_YET */

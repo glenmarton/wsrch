@@ -23,7 +23,6 @@
  * local
  * variables
  */
-static int v = 0;	//verbose flag
 static char filename[128] = "";
 static char wordsearch[MAX_HEIGHT][MAX_WIDTH];
 static size_t width  = 0;
@@ -52,18 +51,6 @@ int wordsearch_load( const char* fname )
 	return read_file( fname );
 }
 
-wstable_t wordsearch_create( void )
-{
-	wstable_t wordsearch = (wstableStruct) ALLOC( sizeof( wstableStruct ));
-
-	return wordsearch;
-}
-
-void wordsearch_destroy( wstable_t* wstablePtr )
-{
-	FREE( wstablePtr );
-}
-
 char* wordsearch_getFilename( void )
 {
 	return filename;
@@ -72,7 +59,7 @@ char* wordsearch_getFilename( void )
 void wordsearch_setFilename( const char* fname )
 {
 	GSPRINT( "old: %s, new: %s", filename, fname );
-	set_filename( fname );
+	strlcpy( filename, fname, sizeof( filename ));
 }
 
 void wordsearch_read( void )

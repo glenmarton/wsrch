@@ -14,139 +14,128 @@
 #include "verbose.h"
 
 /*
- * constants
+ * typedefs
  */
-#define MAX_WIDTH 80
-#define MAX_HEIGHT 80
+typedef struct wstableStruct {
+	char* wstable[80];
+	size_t width, height;
+} wstableStruct;
 
 /*
  * local
  * variables
  */
-static int v = 0;	//verbose flag
-static char* filename = NULL;
-static char wstable[MAX_HEIGHT][MAX_WIDTH];
-static size_t width, height;
+static int v = 0;	// verbose flag
 
 /*
  * local
  * prototypes
  */
+#ifdef NOT_YET	//gmj20151113
 static bool try_this_location( const char* word, point_t start, Seq_T solutions );
 static bool try_every_direction( const char* word, point_t start, Seq_T answer );
 static bool try_this_direction( const char*word, point_t start, direction_t direction );
 static void add_solution( Seq_T answer, const char* word, point_t start, direction_t direction );
 static void set_filename( const char* fname );
+#endif /* NOT_YET */
 
 /*
  * global
  * functions
  */
-void wstable_init( const char* fname )
-{
-	CDPRINT( " %s", fname );
-	set_filename( fname );
-
-	width = 0;
-	height = 0;
-
-	memset( wstable, 0, sizeof( wstable ));
-}
-
 wstable_t wstable_create( void )
 {
-	wstable_t wstable = (wstableStruct) ALLOC( sizeof( wstableStruct ));
+	wstable_t puzzle = (wstableStruct*) ALLOC( sizeof( wstableStruct ));
 
-	return wstable;
+	memset( puzzle->wstable, 0, sizeof( puzzle->wstable ));
+	puzzle->width = 0;
+	puzzle->height = 0;
+
+	return puzzle;
 }
 
 void wstable_destroy( wstable_t* wstablePtr )
 {
+	wstable_t puzzle = *wstablePtr;
+	size_t i, stop = puzzle->height;
+
+	for (i = 0; i < stop; i++) {
+		FREE( puzzle->wstable[i]);
+	}
+
 	FREE( wstablePtr );
 }
 
-char* wstable_getFilename( void )
+size_t wstable_getHeight( wstable_t puzzle )
 {
-	return filename;
+	return puzzle->height;
 }
 
-void wstable_setFilename( const char* fname )
+size_t wstable_getWidth( wstable_t puzzle )
 {
-	GSPRINT( "old: %s, new: %s", filename, fname );
-	set_filename( fname );
+	return puzzle->width;
 }
 
-void wstable_read( void )
+char wstable_at( wstable_t puzzle, size_t row, size_t col )
 {
-	FILE* fp = fopen( filename, "r" );
-	char line[MAX_WIDTH + 1];
-
-	if (!fp) {
-		perror( "ERROR: Can not open word search table" );
-		exit( 2 );
-	}
-
-	while (fgets( line, sizeof( line ), fp ) != NULL) {
-		width = strlen( line );
-		strlcpy( wstable[ height ], line, width + 1 );
-		height++;
-	}
-	fclose( fp );
-
-	assert( width <= MAX_WIDTH );
-	assert( height <= MAX_HEIGHT );
-}
-
-size_t wstable_getHeight( void )
-{
-	return height;
-}
-
-size_t wstable_getWidth( void )
-{
-	return width;
-}
-
-char wstable_at( size_t row, size_t col )
-{
+	size_t width = puzzle->width;
+	size_t height= puzzle->height;
 	size_t no_table_loaded = 0;
 
 	assert( height != no_table_loaded && width != no_table_loaded );
+
 	if(v&0x10)fprintf( stderr, "%s:%d - height = %zu, row = %zu\n", __FILE__, __LINE__, height, row );
 	assert( row < height );
 	assert( col < width );
 
-	return wstable[ row ][ col ];
+	return puzzle->wstable[ row ][ col ];
 }
 
-int wstable_atPoint( point_t point )
+int wstable_atPoint( wstable_t puzzle, point_t point )
 {
 	size_t r = (size_t) point->row;
 	size_t c = (size_t) point->col;
 
-	return wstable_at( r, c );
+	return wstable_at( puzzle, r, c );
 }
 
-char* wstable_getLine( size_t row )
+char* wstable_getLine( wstable_t puzzle, size_t row )
 {
 	size_t y = row - 1;
 
-	assert( y < height );
+	assert( y < puzzle->height );
 
-	return wstable[ y ];
+	return puzzle->wstable[ y ];
 }
 
 
+size_t wstable_addLine( wstable_t puzzle, const char* line )
+{
+	assert( puzzle );
+
+	if (line) {
+		size_t row = puzzle->height++;
+
+		puzzle->wstable[ row ] = mem_stringDuplicate ( line );
+
+		if (puzzle->width == 0) {
+			puzzle->width = strlen( line );
+		}
+	}
+
+	return puzzle->height;
+}
 
 /*
  * local
  * functions
  */
+#ifdef NOT_YET	//gmj20151113
 static bool try_this_location( const char* word, point_t start, Seq_T solutions )
 {
 	bool flag = false;
 	int first_char_of_word = *word;
-	int char_at_start_point = wstable_atPoint( start );
+	int char_at_start_point = wstable_atPoint( puzzle, start );
 
 if(v&8)fprintf( stderr, "%s() - First letter %c == %c at (%d, %d)? %d\n", __func__, *word, char_at_start_point, start->row, start->col, *word == char_at_start_point);
 	if (first_char_of_word == char_at_start_point) {
@@ -220,3 +209,4 @@ static void set_filename( const char* fname )
 		filename = mem_stringDuplicate( fname );
 	}
 }
+#endif /* NOT_YET */
