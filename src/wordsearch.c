@@ -3,13 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "direction.h"
-#include "go.h"
-#include "wstable.h"
 #include "mem.h"
-#include "point.h"
-#include "Seq.h"
-#include "solution.h"
 #include "str_util.h"
 #include "verbose.h"
 
@@ -32,55 +26,48 @@ static size_t height = 0;
  * local
  * prototypes
  */
-static int read_file( const char* fname );
+static void init( const char* fname );
+static int read_file( FILE* fp );
 
 /*
  * global
  * functions
  */
+/*---------------------------------------------------------------
+ * wordsearch_load()
+ * PURPOSE:
+ * Read word search puzzle into memory.
+ *
+ * ARGS:
+ *	fname - file name of word search puzzle
+ *
+ * RETURNS:
+ *	0 - false file failed to load
+ *	1 - true file was loaded
+ */
 int wordsearch_load( const char* fname )
 {
+	int flag = 0;
+	FILE *fp = NULL;
+
 	CDPRINT( " %s", fname );
-	strlcpy( filename, fname, sizeof( filename ));
+	init( fname );
 
-	memset( wordsearch, 0, sizeof( wordsearch ));
+	fp = fopen( fname, "r" );
 
-	width  = 0;
-	height = 0;
+	if (fp) {
+		flag = read_file( fp );
+		fclose( fp );
+	} else {
+		perror( "Fatal can't open word search input table" );
+	}
 
-	return read_file( fname );
+	return flag;
 }
 
 char* wordsearch_getFilename( void )
 {
 	return filename;
-}
-
-void wordsearch_setFilename( const char* fname )
-{
-	GSPRINT( "old: %s, new: %s", filename, fname );
-	strlcpy( filename, fname, sizeof( filename ));
-}
-
-void wordsearch_read( void )
-{
-	FILE* fp = fopen( filename, "r" );
-	char line[MAX_WIDTH + 1];
-
-	if (!fp) {
-		perror( "ERROR: Can not open word search table" );
-		exit( 2 );
-	}
-
-	while (fgets( line, sizeof( line ), fp ) != NULL) {
-		width = strlen( line );
-		strlcpy( wordsearch[ height ], line, width + 1 );
-		height++;
-	}
-	fclose( fp );
-
-	assert( width <= MAX_WIDTH );
-	assert( height <= MAX_HEIGHT );
 }
 
 size_t wordsearch_getHeight( void )
@@ -93,22 +80,41 @@ size_t wordsearch_getWidth( void )
 	return width;
 }
 
+const char* wordsearch_getLine( size_t index )
+{
+	const char* cp = NULL;
+
+	if (index < height) {
+		cp = wordsearch[ index ];
+	}
+
+	return cp;
+}
+
 /*
  * local
  * functions
  */
-static int read_file( const char* fname )
+static void init( const char* fname )
 {
-	FILE* fp = fopen( fname, "r" );
+	strlcpy( filename, fname, sizeof( filename ));
 
-	if (!fp) {
-		perror( "Fatal can't open word search input table" );
-		return 0;
-	}
+	memset( wordsearch, 0, sizeof( wordsearch ));
 
+	width  = 0;
+	height = 0;
+}
+
+static int read_file( FILE* fp )
+{
 	while (fgets( wordsearch[ height ], MAX_WIDTH, fp )) {
+		rtrim( wordsearch[ height ] );
 		height++;
+		assert( height <= MAX_HEIGHT );		// Word search has to many rows.
 	}
 
-	return fclose( fp ) != 0;
+	width = strlen( wordsearch[ 0 ] );
+	assert( width < MAX_WIDTH );			// Word search has to many cols.
+
+	return width > 0;
 }
