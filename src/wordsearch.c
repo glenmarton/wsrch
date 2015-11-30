@@ -19,6 +19,7 @@
  * local
  * variables
  */
+static int v = 0;	//verbose flag
 static char filename[128] = "";
 static char wordsearch[MAX_HEIGHT][MAX_WIDTH];
 static size_t width  = 0;
@@ -30,6 +31,7 @@ static size_t height = 0;
  */
 static void init( const char* fname );
 static int read_file( FILE* fp );
+static void wordsearch_show( FILE *fp );
 
 /*
  * global
@@ -40,8 +42,14 @@ wstable_t wordsearch_create( const char* fname )
 	wstable_t word_search = NULL;
 
 	if (wordsearch_load( fname )) {
+		if (v) {
+			fprintf( stderr, "\t%s()\n", __func__ );
+			wordsearch_show( stderr );
+		}
 		word_search = wstable_create( height, width, wordsearch_getLine );
 	}
+if(v&1)fprintf( stderr, "%s( %s ) - table (%zu, %zu)\n", __func__, filename,
+		wstable_getHeight( word_search ), wstable_getWidth( word_search ) );
 	return word_search;
 }
 
@@ -144,4 +152,14 @@ static int read_file( FILE* fp )
 	assert( width < MAX_WIDTH );			// Word search has to many cols.
 
 	return width > 0;
+}
+
+static void wordsearch_show( FILE *fp )
+{
+	size_t h;
+	fprintf( fp, "filename: %s, size:(%zu, %zu)\n", filename, height, width);
+
+	for (h = 0; h < height; h++) {
+		fprintf( fp, "%s\n", wordsearch[h] );
+	}
 }
