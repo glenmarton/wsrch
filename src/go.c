@@ -2,14 +2,14 @@
 #include <stdbool.h>
 #include "direction.h"
 #include "go.h"
-#include "gotest.h"
 #include "point.h"
+#include "verbose.h"
 
 /*
  * local
  * variables
  */
-static int v = 0;
+static int v = 0x0;
 static int height = 0;
 static int width = 0;
 static 	goFunctPtr_t table[] = { NULL,
@@ -36,14 +36,13 @@ void go_init( int r, int c )
 bool go_north( point_t p )
 {
 	bool flag = false;
-//fprintf( stderr, "%s() enter - table( %d, %d ), point( %d, %d )\n", __func__, height, width, p->row, p->col );
+
 	if (adjust_widthLimit( p ) || adjust_heightLimit( p )) {
-		/* do nothing */
+		GOPRINT( " can not go any further than %s.", point_toStr( p ));
 	} else if (p->row > 0) {
 		p->row--;
 		flag = true;
 	}
-//fprintf( stderr, "%s() exit - table( %d, %d ), point( %d, %d ), flag=%d\n", __func__, height, width, p->row, p->col, flag );
 	return flag;
 }
 
@@ -52,12 +51,9 @@ bool go_south( point_t p )
 	bool flag = false;
 	int max = height - 1;
 
-if(v&4)fprintf( stderr, "%s(%d, %d) table(%d, %d)\n", __func__, p->row, p->col, height, width);
 	if (adjust_widthLimit( p ) || adjust_heightLimit( p )) {
-		/* do nothing */
-if(v&4)fprintf( stderr, "%s:%d - Adjusted to table limits: (%d, %d) table(%d, %d)\n", __FILE__, __LINE__, p->row, p->col, height, width);
+		GOPRINT( " can not go any further than %s.", point_toStr( p ));
 	} else if (p->row < max) {
-if(v&4)fprintf( stderr, "%s() Go south normal: (%d, %d) table(%d, %d)\n", __func__, p->row, p->col, height, width);
 		p->row++;
 		flag = true;
 	} else {
