@@ -6,7 +6,6 @@ extern "C"
 #include "try.h"
 #include "trymock.h"
 #include "verbose.h"
-#include "wstablefill.h"
 }
 
 #include "CppUTest/TestHarness.h"
@@ -28,6 +27,19 @@ TEST_GROUP(Try)
 		wstable_destroy( &puzzle );
 		try_destroy();
     }
+
+	void wstablefill( wstable_t puzzle )
+	{
+		static const char* line1 = "northsoutheastwest";
+		static const char* line2 = "southeastwestnorth";
+		static const char* line3 = "eastwestnorthsouth";
+		static const char* line4 = "westnorthsoutheast";
+
+		wstable_addLine( puzzle, line1 );
+		wstable_addLine( puzzle, line2 );
+		wstable_addLine( puzzle, line3 );
+		wstable_addLine( puzzle, line4 );
+	}
 };
 
 TEST(Try, ThisDirection)
