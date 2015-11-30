@@ -29,8 +29,12 @@ point_t point_new( int r, int c )
 void point_destroy( point_t* ptr )
 {
 	point_t p = *ptr;
-	CDPRINT( " %p", *ptr );
-	//CDPRINT( " (%d,%d)", p->row, p->col );
+
+	if (p) {
+		CDPRINT( " %p (%d, %d)", *ptr, p->row, p->col );
+	} else {
+		CDPRINT( " %p", *ptr );
+	}
 
 	FREE( p );
 	*ptr = NULL;
