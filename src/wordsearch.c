@@ -50,6 +50,10 @@ int wordsearch_load( const char* fname )
 	int flag = 0;
 	FILE *fp = NULL;
 
+	if (fname == NULL || *fname == '\0') {
+		return 0;
+	}
+
 	CDPRINT( " %s", fname );
 	init( fname );
 
