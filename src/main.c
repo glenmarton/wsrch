@@ -6,6 +6,7 @@
  * local
  * prototypes
  */
+static wstable_t create_word_search_table( void );
 static void process_answer( wstable_t puzzle, Seq_T answers );
 
 /*
@@ -49,18 +50,23 @@ int run( FILE* fin )
 	return 0;
 }
 
-int run2( FILE* fin )
+int run2( wstable_t wstable, FILE* fin )
 {
 	char word[65];
 	size_t wsize = sizeof( word );
 
 	while (fgets( word, wsize, fin )) {
-		wstable_t puzzle = wstable_create();
-		Seq_T answers = go_findWord( puzzle, word );
+
+		wstable_t puzzle = wstable_duplicate( wstable );
+
+		Seq_T answers = run_findWord( puzzle, word );
 
 		if (answers) {
 			process_answer( puzzle, answers );
+			Seq_free( &answers );
+			display_answer( puzzle );
 		}
+
 		wstable_destroy( &puzzle );
 	}
 
@@ -72,10 +78,13 @@ int wsrch_main( int argc, char* argv[] )
 int main( int argc, char* argv[] )
 #endif /* CPPUTEST_COMPILATION */
 {
-	wstable_init( argv[1] );
-	wstable_setHightlight( uppercase/star/color_blue );
+	wstable_t word_search_table = wordsearch_create( argv[1] );
 
-	run( stdin );
+	if (word_search_table) {
+		run( word_search_table, stdin);
+		wstable_destroy( &word_search_table );
+	}
+
 	return 0;
 }
 
