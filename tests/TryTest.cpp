@@ -4,7 +4,6 @@ extern "C"
 #include "wstable.h"
 #include "Seq.h"
 #include "try.h"
-#include "trymock.h"
 #include "verbose.h"
 }
 
@@ -19,7 +18,6 @@ TEST_GROUP(Try)
 		puzzle = wstable_createEmpty();
 		wstablefill( puzzle );
 		try_create( puzzle );
-		UT_PTR_SET( try_this_directionFp, try_this_directionMock );
     }
 
     void teardown()
@@ -47,8 +45,6 @@ TEST(Try, ThisDirection)
 	const char* north = "north";
 	point_t start = point_new( 0, 0 );
 
-	try_this_directionFp = try_this_directionImpl;
-
 	CHECK_TRUE( try_this_direction( north, start, EAST ));
 
 	point_destroy( &start );
@@ -59,8 +55,6 @@ TEST(Try, ThisDirectionFails)
 {
 	const char* search = "bungo";
 	point_t start = point_new( 0, 0 );
-
-	try_this_directionFp = try_this_directionImpl;
 
 	CHECK_FALSE( try_this_direction( search, start, EAST ));
 

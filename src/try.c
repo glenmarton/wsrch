@@ -12,12 +12,6 @@
 #include "verbose.h"
 
 /*
- * global
- * variables
- */
-bool (*try_this_directionFp)( const char*, point_t, direction_t) = try_this_directionImpl;
-
-/*
  * local
  * variables
  */
@@ -93,11 +87,6 @@ TYPRINT( " - Found %zu solutions.", Seq_length( answer ));
 }
 
 bool try_this_direction( const char*word, point_t start, direction_t direction )
-{
-	return try_this_directionFp( word, start, direction );
-}
-
-bool try_this_directionImpl( const char*word, point_t start, direction_t direction )
 {
 	const char* cp = word + 1;
 	const char* stop = word + strlen( word ) - 1;

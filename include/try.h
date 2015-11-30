@@ -4,8 +4,6 @@
 #ifndef __TRY_H__
 #define __TRY_H__
 
-extern bool (*try_this_directionFp)( const char*, point_t, direction_t);
-
 /* Global count = 7 */
 void try_create( wstable_t wstable );
 void try_destroy( void );
