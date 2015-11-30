@@ -4,7 +4,9 @@
 #ifndef __WORDSEARCH_H__
 #define __WORDSEARCH_H__
 
-/* Global count = 5 */
+/* Global count = 7 */
+wstable_t wordsearch_create( const char* fname );
+void wordsearch_destroy( void );
 int wordsearch_load( const char* fname );
 char* wordsearch_getFilename( void );
 size_t wordsearch_getHeight( void );

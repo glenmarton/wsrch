@@ -6,6 +6,8 @@
 #include "mem.h"
 #include "str_util.h"
 #include "verbose.h"
+#include "wstable.h"
+#include "wordsearch.h"
 
 /*
  * constants
@@ -33,6 +35,26 @@ static int read_file( FILE* fp );
  * global
  * functions
  */
+wstable_t wordsearch_create( const char* fname )
+{
+	wstable_t word_search = NULL;
+
+	if (wordsearch_load( fname )) {
+		word_search = wstable_create( height, width, wordsearch_getLine );
+	}
+	return word_search;
+}
+
+void wordsearch_destroy( void )
+{
+	height = 0;
+	width  = 0;
+
+	memset( wordsearch, 0, sizeof( wordsearch ));
+
+	*filename = '\0';
+}
+
 /*---------------------------------------------------------------
  * wordsearch_load()
  * PURPOSE:
