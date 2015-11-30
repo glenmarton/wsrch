@@ -140,28 +140,6 @@ void go_print_fptrs( void )
 	}
 }
 
-Seq_T wstable_findWord( void* vpuzzle, const char* word )
-{
-	Seq_T answer = Seq_new( 5 );
-	point_t start = point_create();
-
-	while (start->row < height) {
-if(v&10)fprintf( stderr, "%s:%d - check row: %d\n", __FILE__, __LINE__, start->row );
-		start->col = 0;
-		while (start->col < width) {
-if(v&10)fprintf( stderr, "%s:%d - check col: %d\n", __FILE__, __LINE__, start->col );
-#ifdef NOT_YET	//gmj20151113
-			flag |= try_this_location( word, start, answer );
-#endif /* NOT_YET */
-			start->col++;
-		}
-		start->row++;
-	}
-
-	point_destroy( &start );
-	return answer;
-}
-
 /*
  * local
  * functions
