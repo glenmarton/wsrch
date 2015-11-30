@@ -4,10 +4,11 @@
 #ifndef __VERBOSE_H__
 #define __VERBOSE_H__
 
-enum verbose_t { VERBOSE_OFF, CONSTRUCTOR_DESTRUCTOR, GET_SET };
+enum verbose_t { VERBOSE_OFF, CONSTRUCTOR_DESTRUCTOR, GET_SET, RUN_SEARCH=4};
 
 #define CDPRINT(fmt, args...) verbose_print( CONSTRUCTOR_DESTRUCTOR, __func__, (fmt), ## args)
 #define GSPRINT(fmt, args...) verbose_print( GET_SET, __func__, (fmt), ## args)
+#define RSPRINT(fmt, args...) verbose_print( RUN_SEARCH, __func__, (fmt), ## args)
 
 /* Global count = 4 */
 void verbose_set( int v );
