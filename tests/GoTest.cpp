@@ -64,10 +64,12 @@ TEST(Go, NorthColBeyondTable)
 {
 	point.col = -1;
 	CHECK_FALSE( go_north( p ));
+	LONGS_EQUAL( 2, p->row );
 	LONGS_EQUAL( 0, p->col );
 
 	point.col = 5;
 	CHECK_FALSE( go_north( p ));
+	LONGS_EQUAL( 2, p->row );
 	LONGS_EQUAL( 4, p->col );
 }
 
@@ -104,10 +106,12 @@ TEST(Go, SouthColBeyondTable)
 {
 	point.col = -1;
 	CHECK_FALSE( go_south( p ));
+	LONGS_EQUAL( 2, p->row );
 	LONGS_EQUAL( 0, p->col );
 
 	point.col = 5;
 	CHECK_FALSE( go_south( p ));
+	LONGS_EQUAL( 2, p->row );
 	LONGS_EQUAL( 4, p->col );
 }
 
@@ -120,7 +124,6 @@ TEST(Go, East)
 
 TEST(Go, EastBeyondTable)
 {
-	CHECK_TRUE(  go_east( p ));
 	CHECK_TRUE(  go_east( p ));
 	CHECK_FALSE( go_east( p ));
 	LONGS_EQUAL( 4, p->col );
@@ -145,10 +148,12 @@ TEST(Go, EastRowBeyondTable)
 	point.row = -1;
 	CHECK_FALSE( go_east( p ));
 	LONGS_EQUAL( 0, p->row );
+	LONGS_EQUAL( 3, p->col );
 
 	point.row = 4;
 	CHECK_FALSE( go_east( p ));
 	LONGS_EQUAL( 3, p->row );
+	LONGS_EQUAL( 3, p->col );
 }
 
 // West tests:
@@ -192,10 +197,12 @@ TEST(Go, WestRowBeyondTable)
 	point.row = -1;
 	CHECK_FALSE( go_west( p ));
 	LONGS_EQUAL( 0, p->row );
+	LONGS_EQUAL( 3, p->col );
 
 	point.row = 4;
 	CHECK_FALSE( go_west( p ));
 	LONGS_EQUAL( 3, p->row );
+	LONGS_EQUAL( 3, p->col );
 }
 
 TEST(Go, GetFunctionPtr)
