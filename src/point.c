@@ -49,3 +49,12 @@ point_t point_duplicate( point_t src )
 
 	return dup;
 }
+
+const char* point_toStr( point_t p )
+{
+	static char str[15];
+
+	sprintf( str, "(%d, %d)", p->row, p->col );
+
+	return str;
+}
