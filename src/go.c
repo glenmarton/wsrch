@@ -56,9 +56,6 @@ bool go_south( point_t p )
 	} else if (p->row < max) {
 		p->row++;
 		flag = true;
-	} else {
-		p->row = max;
-if(v&4)fprintf( stderr, "%s() using max south value (%d, %d) table(%d, %d)\n", __func__, p->row, p->col, height, width);
 	}
 	return flag;
 }
@@ -66,11 +63,12 @@ if(v&4)fprintf( stderr, "%s() using max south value (%d, %d) table(%d, %d)\n", _
 bool go_east( point_t p )
 {
 	bool flag = false;
+	int max = width - 1;
 
 if(v&1)fprintf( stderr, "%s(%d, %d) table(%d, %d)\n", __func__, p->row, p->col, height, width);
 	if (adjust_widthLimit( p ) || adjust_heightLimit( p )) {
-		/* do nothing */
-	} else if (p->col < width) {
+		GOPRINT( " can not go any further than %s.", point_toStr( p ));
+	} else if (p->col < max) {
 		p->col++;
 		flag = true;
 	}
