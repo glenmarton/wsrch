@@ -111,6 +111,7 @@ static void init( const char* fname )
 
 static int read_file( FILE* fp )
 {
+	height = 0;
 	while (fgets( wordsearch[ height ], MAX_WIDTH, fp )) {
 		rtrim( wordsearch[ height ] );
 		height++;
