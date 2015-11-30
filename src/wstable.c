@@ -31,7 +31,7 @@ static int v = 0;	// verbose flag
  * global
  * functions
  */
-wstable_t wstable_create( void )
+wstable_t wstable_createEmpty( void )
 {
 	wstable_t puzzle = (wstableStruct*) ALLOC( sizeof( wstableStruct ));
 
@@ -42,16 +42,55 @@ wstable_t wstable_create( void )
 	return puzzle;
 }
 
+wstable_t wstable_create( size_t height, size_t width, getlineFp_t getline )
+{
+	size_t h;
+
+	wstable_t puzzle = wstable_createEmpty();
+
+	for (h = 0; h < height; h++) {
+		wstable_addLine( puzzle, getline( h ));
+	}
+
+	return puzzle;
+}
+
 void wstable_destroy( wstable_t* wstablePtr )
 {
 	wstable_t puzzle = *wstablePtr;
-	size_t i, stop = puzzle->height;
+	size_t i, stop = 0;
+
+	if (puzzle) {
+		stop = puzzle->height;
+	}
 
 	for (i = 0; i < stop; i++) {
 		FREE( puzzle->wstable[i]);
 	}
 
-	FREE( wstablePtr );
+	FREE( *wstablePtr );
+}
+
+wstable_t wstable_duplicate( wstable_t orig )
+{
+	wstable_t dup = NULL;
+	size_t height;
+	size_t width;
+	size_t h;
+
+	assert( orig );
+
+	height = wstable_getHeight( orig );
+	width = wstable_getWidth( orig );
+
+	dup = wstable_createEmpty();
+	dup->width = width;
+
+	for (h = 0; h < height; h++) {
+		wstable_addLine( dup, wstable_getLine( orig, h ));
+	}
+
+	return dup;
 }
 
 size_t wstable_getHeight( wstable_t puzzle )
@@ -73,6 +112,7 @@ char wstable_at( wstable_t puzzle, size_t row, size_t col )
 	assert( height != no_table_loaded && width != no_table_loaded );
 
 	if(v&0x10)fprintf( stderr, "%s:%d - height = %zu, row = %zu\n", __FILE__, __LINE__, height, row );
+	if(v&0x10)fprintf( stderr, "%s:%d - width  = %zu, col = %zu\n", __FILE__, __LINE__, width,  col );
 	assert( row < height );
 	assert( col < width );
 
@@ -89,13 +129,10 @@ int wstable_atPoint( wstable_t puzzle, point_t point )
 
 char* wstable_getLine( wstable_t puzzle, size_t row )
 {
-	size_t y = row - 1;
+	assert( row < puzzle->height );
 
-	assert( y < puzzle->height );
-
-	return puzzle->wstable[ y ];
+	return puzzle->wstable[ row ];
 }
-
 
 size_t wstable_addLine( wstable_t puzzle, const char* line )
 {
