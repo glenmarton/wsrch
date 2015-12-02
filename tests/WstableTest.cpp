@@ -44,6 +44,7 @@ TEST_GROUP(Wstable)
 		wstable_addLine( puzzle, line3 );
 		wstable_addLine( puzzle, line4 );
 
+		testtable_init();
 		testtable_addline(line1 );
 		testtable_addline(line2 );
 		testtable_addline(line3 );
